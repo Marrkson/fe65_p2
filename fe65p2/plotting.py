@@ -325,7 +325,4 @@ def scan_pix_hist(h5_file_name, scurve_sel_pix=200):
 
 
 if __name__ == "__main__":
-    plot= t_dac_plot('/home/mark/Bachelorstuff/fe65_p2/fe65p2/scans/output_data/20160906_104210_threshold_scan.h5')
-    output_file('/home/mark/Bachelorstuff/fe65_p2/fe65p2/scans/output_data/20160906_104210_threshold_scan1.html')
-    show(plot)
     pass
