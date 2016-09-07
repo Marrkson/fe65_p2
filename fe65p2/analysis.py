@@ -212,7 +212,7 @@ def fit_cosh(x_data, y_data,thresh,decline):
     c=np.max(y_data)
     d=np.min(y_data)
     params_guess = np.array([a, b, c, d])
-    print "params_guessed: ", params_guess
+    #print "params_guessed: ", params_guess
     try:
         params_from_fit=curve_fit(cosh, x_data, y_data, p0=params_guess)
     except RuntimeError:

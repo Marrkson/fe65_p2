@@ -25,7 +25,6 @@ def plot_timewalk(h5_file_name):
         except RuntimeError:
             logging.info('tdc_data not present in file')
             return
-        print repeat_command
         time_thresh = td_threshold['td_threshold']
         expfit0 = td_threshold['expfit0']
         expfit1 = td_threshold['expfit1']
