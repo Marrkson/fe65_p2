@@ -192,6 +192,8 @@ def t_dac_plot(h5_file_name):
     T_Dac_pure = T_Dac_pure.astype(int)
     T_Dac_hist_y = np.bincount(T_Dac_pure)
     T_Dac_hist_x = np.arange(0, T_Dac_hist_y.size, 1)
+    print T_Dac_hist_y
+    print T_Dac_hist_x
     plt_t_dac = figure(title='T-Dac-distribution ', x_axis_label="T-Dac", y_axis_label="#Pixel")
     plt_t_dac.quad(top=T_Dac_hist_y, bottom=0, left=T_Dac_hist_x[:-1], right=T_Dac_hist_x[1:], fill_color="#036564",
                    line_color="#033649", legend="# " + str(int(np.sum(T_Dac_hist_y[:]))))
@@ -323,4 +325,7 @@ def scan_pix_hist(h5_file_name, scurve_sel_pix=200):
 
 
 if __name__ == "__main__":
+    plot= t_dac_plot('/home/mark/Bachelorstuff/fe65_p2/fe65p2/scans/output_data/20160906_104210_threshold_scan.h5')
+    output_file('/home/mark/Bachelorstuff/fe65_p2/fe65p2/scans/output_data/20160906_104210_threshold_scan1.html')
+    show(plot)
     pass
