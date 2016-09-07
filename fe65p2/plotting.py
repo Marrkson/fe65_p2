@@ -20,10 +20,12 @@ def plot_timewalk(h5_file_name):
         try:
             tdc_data = in_file_h5.root.tdc_data[:]
             td_threshold = in_file_h5.root.td_threshold[:]
+            repeat_command_dict = in_file_h5.root.tdc_data.attrs.repeat_command
+            repeat_command= repeat_command_dict['repeat_command']
         except RuntimeError:
             logging.info('tdc_data not present in file')
             return
-
+        print repeat_command
         time_thresh = td_threshold['td_threshold']
         expfit0 = td_threshold['expfit0']
         expfit1 = td_threshold['expfit1']
@@ -59,7 +61,7 @@ def plot_timewalk(h5_file_name):
             if time_thresh[i] == 0:
                 continue
             single_scan.diamond(x=pulse[s1:s2], y=hits[s1:s2], size=5, color=Spectral11[i - 1], line_width=2)
-            A, mu, sigma = analysis.fit_scurve(hits[s1:s2], pulse[s1:s2])
+            A, mu, sigma = analysis.fit_scurve(hits[s1:s2], pulse[s1:s2], repeat_command)
             for values in range(s1, s2):
                 if pulse[values] >= 5 / 4 * mu:
                     s1 = values
@@ -192,11 +194,12 @@ def t_dac_plot(h5_file_name):
     T_Dac_pure = T_Dac_pure.astype(int)
     T_Dac_hist_y = np.bincount(T_Dac_pure)
     T_Dac_hist_x = np.arange(0, T_Dac_hist_y.size, 1)
-    print T_Dac_hist_y
-    print T_Dac_hist_x
+    gauss_TDAC = analysis.fit_gauss(T_Dac_hist_x, T_Dac_hist_y)
     plt_t_dac = figure(title='T-Dac-distribution ', x_axis_label="T-Dac", y_axis_label="#Pixel")
     plt_t_dac.quad(top=T_Dac_hist_y, bottom=0, left=T_Dac_hist_x[:-1], right=T_Dac_hist_x[1:], fill_color="#036564",
-                   line_color="#033649", legend="# " + str(int(np.sum(T_Dac_hist_y[:]))))
+                   line_color="#033649", legend="#{0:d}  mean={1:.2f}  std={2:.2f}".format(int(np.sum(T_Dac_hist_y[:])), gauss_TDAC[1] , gauss_TDAC[2] ))
+    plt_t_dac.line(T_Dac_hist_x, analysis.gauss(T_Dac_hist_x, gauss_TDAC[0], gauss_TDAC[1], gauss_TDAC[2]),
+                   line_color="#D95B43", line_width=8, alpha=0.7)
     return plt_t_dac
 
 
@@ -325,7 +328,4 @@ def scan_pix_hist(h5_file_name, scurve_sel_pix=200):
 
 
 if __name__ == "__main__":
-    plot= t_dac_plot('/home/mark/Bachelorstuff/fe65_p2/fe65p2/scans/output_data/20160906_104210_threshold_scan.h5')
-    output_file('/home/mark/Bachelorstuff/fe65_p2/fe65p2/scans/output_data/20160906_104210_threshold_scan1.html')
-    show(plot)
     pass
