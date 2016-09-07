@@ -21,8 +21,9 @@ local_configuration = {
     "repeat_command": 100,
     "scan_range": [0.0, 0.6, 0.01],
     "vthin1Dac": 100,
+    "vthin2Dac": 0,
     "PrmpVbpDac": 80,
-    "preCompVbnDac" : 50,
+    "preCompVbnDac" : 110,
     "columns" : [True] * 2 + [False] * 14,
     "mask_filename": '',
     "TDAC" : 16

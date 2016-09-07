@@ -192,8 +192,6 @@ def t_dac_plot(h5_file_name):
     T_Dac_pure = T_Dac_pure.astype(int)
     T_Dac_hist_y = np.bincount(T_Dac_pure)
     T_Dac_hist_x = np.arange(0, T_Dac_hist_y.size, 1)
-    print T_Dac_hist_y
-    print T_Dac_hist_x
     plt_t_dac = figure(title='T-Dac-distribution ', x_axis_label="T-Dac", y_axis_label="#Pixel")
     plt_t_dac.quad(top=T_Dac_hist_y, bottom=0, left=T_Dac_hist_x[:-1], right=T_Dac_hist_x[1:], fill_color="#036564",
                    line_color="#033649", legend="# " + str(int(np.sum(T_Dac_hist_y[:]))))
@@ -294,8 +292,8 @@ def scan_pix_hist(h5_file_name, scurve_sel_pix=200):
         plt_th_dist.extra_x_ranges = {"e": Range1d(start=edges[0] * 1000 * analysis.cap_fac(),
                                                    end=edges[-1] * 1000 * analysis.cap_fac())}  # better 7.4?
         plt_th_dist.add_layout(LinearAxis(x_range_name="e"), 'above')
-        plt_th_dist.line(np.arange(edges[1], edges[50], 0.0001),
-                         analysis.gauss(np.arange(edges[1], edges[50], 0.0001), Thresh_gauss['height'],
+        plt_th_dist.line(np.arange(edges[1], edges[-1], 0.0001),
+                         analysis.gauss(np.arange(edges[1], edges[-1], 0.0001), Thresh_gauss['height'],
                                         Thresh_gauss['mu'], Thresh_gauss['sigma']), line_color="#D95B43", line_width=8,
                          alpha=0.7)
 
@@ -325,7 +323,4 @@ def scan_pix_hist(h5_file_name, scurve_sel_pix=200):
 
 
 if __name__ == "__main__":
-    plot= t_dac_plot('/home/mark/Bachelorstuff/fe65_p2/fe65p2/scans/output_data/20160906_104210_threshold_scan.h5')
-    output_file('/home/mark/Bachelorstuff/fe65_p2/fe65p2/scans/output_data/20160906_104210_threshold_scan1.html')
-    show(plot)
     pass
