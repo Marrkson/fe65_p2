@@ -167,7 +167,7 @@ class ScanBase(object):
         counter = 0
         for i in data_tuple[0]:
             counter = counter + int(get_bin(int(data_tuple[0][0]), 32)[1])
-        self.meta_data_table.row['trigger'] = counter / len(data_tuple[0])
+        self.meta_data_table.row['trigger'] = float(counter) / float(len(data_tuple[0]))
         self.meta_data_table.row.append()
         self.meta_data_table.flush()
         # print len_raw_data

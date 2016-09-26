@@ -268,7 +268,9 @@ class fe65p2(Dut):
             index = np.append(index, meta_data.shape[0])
             index = index - 1
             stops = meta_data['index_stop'][index]
+            #print "stops: ", stops
             split = np.split(raw_data, stops)
+            #print "split: ", split
             for i in range(len(split[:-1])):
                 #print param[i], stops[i], len(split[i]), split[i]
                 int_pix_data = self.interpret_raw_data(split[i])

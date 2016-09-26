@@ -17,23 +17,21 @@ from basil.dut import Dut
 import os
 
 local_configuration = {
-    "mask_steps": 4,
+    "mask_steps": 1,
     "repeat_command": 100,
-    "scan_range": [0.0, 0.2, 0.001],
-    "vthin1Dac": 75,
-    "vthin2Dac": 60,
-    "PrmpVbpDac": 36,
-    "preCompVbnDac" : 50,
-    "columns" : [False] * 6 + [True] * 2 + [False] * 8,
-    "mask_filename": '/home/mark/Bachelorstuff/fe65_p2/fe65p2/scans/output_data/20160923_172559_noise_scan.h5',
-    "TDAC" : 16
+    "scan_range": [0.0, 0.2, 0.5],
+    "vthin1Dac": 20,
+    "PrmpVbpDac": 80,
+    "preCompVbnDac" : 110,
+    "columns" : [True] * 2 + [False] * 14,
+    "mask_filename": '/media/mark/1TB/Scanresults/output_data/new_chips/chip1/20160906_120820_noise_scan_standard.h5'
 }
 
 class ThresholdScan(ScanBase):
     scan_id = "threshold_scan"
 
 
-    def scan(self, mask_steps=4, TDAC=16, repeat_command=100, PrmpVbpDac=80, vthin2Dac=0, columns = [True] * 16, scan_range = [0, 0.2, 0.005], vthin1Dac = 80, preCompVbnDac = 50, mask_filename='', **kwargs):
+    def scan(self, mask_steps=4, repeat_command=100, PrmpVbpDac=80, vthin2Dac=0, columns = [True] * 16, scan_range = [0, 0.2, 0.005], vthin1Dac = 80, preCompVbnDac = 50, mask_filename='', **kwargs):
 
         '''Scan loop
         Parameters
@@ -100,7 +98,7 @@ class ThresholdScan(ScanBase):
         self.dut['global_conf']['InjEnLd'] = 0
 
         mask_en = np.full([64,64], False, dtype = np.bool)
-        mask_tdac = np.full([64,64], TDAC, dtype = np.uint8)
+        mask_tdac = np.full([64,64], 16, dtype = np.uint8)
 
         for inx, col in enumerate(columns):
            if col:
@@ -128,6 +126,22 @@ class ThresholdScan(ScanBase):
         self.dut['trigger'].set_width(16)
         self.dut['trigger'].set_repeat(1)
         self.dut['trigger'].set_en(True)
+
+        ###
+        self.dut['trigger'].set_delay(10000) #this seems to be working OK problem is probably bad injection on GPAC usually +0
+        self.dut['trigger'].set_width(16)
+        self.dut['trigger'].set_repeat(repeat_command)
+        self.dut['trigger'].set_en(False)
+
+        ##
+        logging.debug('Configure TDC')
+        self.dut['tdc']['RESET'] = True
+        self.dut['tdc']['EN_TRIGGER_DIST'] = True
+        self.dut['tdc']['ENABLE_EXTERN'] = False
+        self.dut['tdc']['EN_ARMING'] = False
+        self.dut['tdc']['EN_INVERT_TRIGGER'] = False
+        self.dut['tdc']['EN_INVERT_TDC'] = False
+        self.dut['tdc']['EN_WRITE_TIMESTAMP'] = True
 
         lmask = [1] + ( [0] * (mask_steps-1) )
         lmask = lmask * ( (64 * 64) / mask_steps  + 1 )
@@ -170,7 +184,8 @@ class ThresholdScan(ScanBase):
                     self.dut.write_global()
                     time.sleep(0.1)
 
-                    self.dut['inj'].start()
+                    #self.dut['inj'].start()
+
 
                     pbar.update(i)
 
@@ -179,6 +194,24 @@ class ThresholdScan(ScanBase):
 
                     while not self.dut['trigger'].is_done():
                         pass
+
+                    #self.dut['trigger'].set_repeat(0)
+                    #self.dut['control']['CLK_BX_GATE'] = 0
+                    #self.dut['control']['CLK_OUT_GATE'] = 0
+                    #self.dut['control'].write()
+
+                    print('!!!!!!!!!!!!!!!1')
+                    self.dut['tdc'].ENABLE = True
+                    self.dut['trigger'].start()
+                    time.sleep(10)
+                    self.dut['tdc'].ENABLE = False
+                    print('!!!!!!!!!!!!!!!2')
+
+                    #self.dut['control']['CLK_BX_GATE'] = 1
+                    #self.dut['control']['CLK_OUT_GATE'] = 1
+                    #self.dut['control'].write()
+
+
 
         scan_results = self.h5_file.create_group("/", 'scan_results', 'Scan Masks')
         self.h5_file.createCArray(scan_results, 'tdac_mask', obj=mask_tdac)

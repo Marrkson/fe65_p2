@@ -271,7 +271,7 @@ def scan_pix_hist(h5_file_name, scurve_sel_pix=200):
         yf = analysis.scurve(x, 100, Threshold_pure[px], Noise_pure[px])
         single_scan.cross(x=x, y=yf, size=5, color="#E6550D", line_width=2)
 
-        hist, edges = np.histogram(Threshold_pure, density=False, bins=50)
+        hist, edges = np.histogram(Threshold_pure, density=False, bins=50)#50
 
         hm1 = HeatMap(data, x='scan_param', y='count', values='value', title='Threshold Heatmap',
                       palette=Spectral11[::-1], stat=None, plot_width=1000)  # , height=4100)
@@ -301,7 +301,7 @@ def scan_pix_hist(h5_file_name, scurve_sel_pix=200):
                                         Thresh_gauss['mu'], Thresh_gauss['sigma']), line_color="#D95B43", line_width=8,
                          alpha=0.7)
 
-        hist, edges = np.histogram(Noise_pure, density=False, bins=50)
+        hist, edges = np.histogram(Noise_pure, density=False, bins=50) #50
         hm_noise = figure(title="Noise", x_axis_label="pixel #", y_axis_label="noise [V]", y_range=(0, edges[-1]),
                           plot_width=1000)
         hm_noise.diamond(y=Noise_pure, x=range(64 * 64), size=2, color="#1C9099", line_width=2)

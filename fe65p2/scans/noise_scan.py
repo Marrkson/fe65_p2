@@ -16,11 +16,11 @@ import os
 
 local_configuration = {
     "stop_pixel_count": 4,
-    "vthin2Dac": 0,
-    "vthin1Dac": 130,
-    "columns": [True] * 2 + [False] * 14,
-    "preCompVbnDac": 110,
-    "PrmpVbpDac": 80,
+    "vthin2Dac": 60,
+    "vthin1Dac": 190,
+    "columns": [False] * 6 + [True] * 2 + [False] * 8,
+    "preCompVbnDac": 50,
+    "PrmpVbpDac": 36,
 }
 
 
